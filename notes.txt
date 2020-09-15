@@ -5,10 +5,11 @@ design decision:
 - should timestamp range be inclusive of end? currently inclusive
 
 idea:
-- use earliest/latest in range to group timestamps prior to running serially
+- use earliest/latest in range to group timestamps prior to running serially, using some sort of binary search
 
 todos:
 - basic documentation for github
 - test-suite
 - dedicated demo stores
 - read the docs
+- requirements.txt
