@@ -33,13 +33,12 @@ class Extractor:
             if response.status_code == 404:
 
                 print('Error : 404 code')
-                return events
+                return None
 
             elif response.status_code == 429:
 
                 print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
                 time.sleep(int(self.config['rate_limit']['sleep']))
-                return response
 
             else:
 
@@ -115,7 +114,6 @@ class Extractor:
             if response.status_code == 404:
 
                 print('Error: 404')
-                print('Response',response)
                 return None
 
             elif response.status_code == 429:
