@@ -1,10 +1,15 @@
-# extract-events
+features:
+- add get metrics dict; will enable grabbing all metric events without copying code
 
-repo for extracting events from klaviyo
+design decision:
+- should timestamp range be inclusive of end? currently inclusive
 
-# dependencies
+idea:
+- use earliest/latest in range to group timestamps prior to running serially, using some sort of binary search
 
-Python 3.8.3
-
-packages:
-- requests
+todos:
+- basic documentation for github
+- test-suite
+- dedicated demo stores
+- read the docs
+- requirements.txt
