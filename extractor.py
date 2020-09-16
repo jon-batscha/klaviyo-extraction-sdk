@@ -37,8 +37,10 @@ class Extractor:
 
             elif response.status_code == 429:
 
-                print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
-                time.sleep(eval(self.config['rate_limit']['sleep']))
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
@@ -118,8 +120,10 @@ class Extractor:
 
             elif response.status_code == 429:
 
-                print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
-                time.sleep(eval(self.config['rate_limit']['sleep']))
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
@@ -204,8 +208,10 @@ class Extractor:
 
             elif response.status_code == 429:
 
-                print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
-                time.sleep(eval(self.config['rate_limit']['sleep']))
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
@@ -227,8 +233,10 @@ class Extractor:
 
             if response.status_code == 429:
 
-                print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
-                time.sleep(eval(self.config['rate_limit']['sleep']))
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
