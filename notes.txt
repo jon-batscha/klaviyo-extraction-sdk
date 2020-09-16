@@ -13,3 +13,4 @@ todos:
 - dedicated demo stores
 - read the docs
 - requirements.txt
+- make clean/simple examples for profiles/events
