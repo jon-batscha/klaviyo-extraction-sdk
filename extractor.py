@@ -2,10 +2,9 @@ from utils import *
 
 class Extractor:
 
-    def __init__(self,config_path):
+    def __init__(self, private_key):
 
-        self.config = configparser.ConfigParser()
-        self.config.read(config_path)
+        self.private_key = private_key
 
 
     def get_metric_events(self, metric_id, earliest_timestamp, last_timestamp):
@@ -26,7 +25,7 @@ class Extractor:
 
             print(f'# Events Retrieved by Thread : {len(events)}')
 
-            timeline_call = f'https://a.klaviyo.com/api/v1/metric/{metric_id}/timeline?api_key={self.config["account"]["private_key"]}&since={since}&sort=asc&count=100'
+            timeline_call = f'https://a.klaviyo.com/api/v1/metric/{metric_id}/timeline?api_key={self.private_key}&since={since}&sort=asc&count=100'
 
             response = requests.get(timeline_call)
 
@@ -109,7 +108,7 @@ class Extractor:
         # get number of pages
         while True:
 
-            metrics_call = f'https://a.klaviyo.com/api/v1/metrics?api_key={self.config["account"]["private_key"]}&count=1'
+            metrics_call = f'https://a.klaviyo.com/api/v1/metrics?api_key={self.private_key}&count=1'
 
             response = requests.get(metrics_call)
 
@@ -142,7 +141,7 @@ class Extractor:
         # get metrics from each page
         while current_page < pages:
 
-            page_call = f'https://a.klaviyo.com/api/v1/metrics?api_key={self.config["account"]["private_key"]}&page={current_page}&count=100'
+            page_call = f'https://a.klaviyo.com/api/v1/metrics?api_key={self.private_key}&page={current_page}&count=100'
 
             response = requests.get(page_call)
 
@@ -153,8 +152,10 @@ class Extractor:
 
             elif response.status_code == 429:
 
-                print(f'rate limit exceeded, sleeping {self.config["rate_limit"]["sleep"]} seconds')
-                time.sleep(eval(self.config['rate_limit']['sleep']))
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
@@ -184,11 +185,11 @@ class Extractor:
 
             if not marker:
 
-                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.config["account"]["private_key"]}'
+                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}'
 
             else:
 
-                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.config["account"]["private_key"]}&marker={marker}'
+                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}&marker={marker}'
 
             response = requests.get(members_call)
 
@@ -227,7 +228,7 @@ class Extractor:
 
         while True:
 
-            profile_call = f'https://a.klaviyo.com/api/v1/person/{profile_id}?api_key={self.config["account"]["private_key"]}'
+            profile_call = f'https://a.klaviyo.com/api/v1/person/{profile_id}?api_key={self.private_key}'
 
             response = requests.get(profile_call)
 
