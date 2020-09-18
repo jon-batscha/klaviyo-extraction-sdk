@@ -16,13 +16,13 @@ from itertools import repeat
 
 
 # events
-def write_events(events,filename):
+def write_data(data,filename):
 
     with open(filename,'w') as outfile:
 
-        for event in events:
+        for datapoint in data:
 
-            outfile.write(json.dumps(event)+'\n')
+            outfile.write(json.dumps(datapoint)+'\n')
 
 
 def timestamp_ranges(low,high,threads):
