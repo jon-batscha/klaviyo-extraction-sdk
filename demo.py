@@ -41,7 +41,7 @@ utils.write_data(profiles,profiles_local_path)
 
 
 #s3
-s3_bucket_name = 'klaviyo-extract'
+s3_bucket_name = 'klaviyo-extract-demo'
 events_s3_key = 'events.json'
 profiles_s3_key = 'profiles.json'
 
