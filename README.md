@@ -12,6 +12,10 @@ Currently, the SDK supports extracting Events, Profiles, and Metrics, but in the
 #### `utils.py`
 - contains a few helper functions used the `Extractor` class
 
+#### `demo.py`
+- a sample script that demonstrates how to use some features in the SDK
+
+
 ## Optimization/Threading for Events
 
 There are 2 parallelized methods for extracting events, each optimized for a different case:
