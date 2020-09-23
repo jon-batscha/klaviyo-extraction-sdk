@@ -1,4 +1,4 @@
-# Klaviyo-Extract SDK
+# Klaviyo Extraction SDK
 
 This SDK is a wrapper around Klaviyo's API, that makes it easier to extract data via the API.
 
