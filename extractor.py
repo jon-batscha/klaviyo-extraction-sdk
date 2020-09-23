@@ -23,8 +23,6 @@ class Extractor:
 
         while True:
 
-            print(f'# Events Retrieved by Thread : {len(events)}')
-
             timeline_call = f'https://a.klaviyo.com/api/v1/metric/{metric_id}/timeline?api_key={self.private_key}&since={since}&sort=asc&count=100'
 
             response = requests.get(timeline_call)
@@ -61,6 +59,9 @@ class Extractor:
                 if not since:
                     print(f'Done Retrieving Events for Thread : {len(events)}')
                     return events
+
+            print(f'# Events Retrieved by Thread : {len(events)}')
+
     
     def get_metric_events_serial(self,metric_id,earliest_timestamp,latest_timestamp):
 
@@ -181,8 +182,6 @@ class Extractor:
 
         while True:
 
-            print('IDs SAVED:',len(ids))
-
             if not marker:
 
                 members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}'
@@ -219,6 +218,10 @@ class Extractor:
                 print('ERROR 404')
                 return None
 
+            print('IDs SAVED:',len(ids))
+
+
+        print('IDs SAVED:',len(ids))
         return ids
 
     def get_profile(self, profile_id):
@@ -273,4 +276,3 @@ class Extractor:
         out = [profile for profile in result if profile]
 
         return out 
-
