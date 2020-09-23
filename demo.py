@@ -27,9 +27,7 @@ max_profiles = 50
 
 ids = extractor.get_profile_ids(segment_id)[:max_profiles]
 
-profiles = [extractor.get_profile(id) for id in ids]
-
-profiles = [p for p in profiles if p]
+profiles = extractor.get_profiles_parallel(ids)
 
 
 # write data
