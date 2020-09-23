@@ -256,3 +256,21 @@ class Extractor:
                         print(f'UNKNOWN RESPONSE: {response.status_code}')
 
                     return None
+                
+    def get_profiles_parallel(self, profile_ids):
+        '''
+        given a list of profile IDs, return a list of profiles, using parallel API calls
+        '''
+
+        cores = multiprocessing.cpu_count()
+
+        pool = multiprocessing.Pool(processes=cores)
+
+        result = pool.map(self.get_profile, profile_ids)
+        pool.close()
+        pool.join()
+
+        out = [profile for profile in result if profile]
+
+        return out 
+
