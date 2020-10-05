@@ -1,6 +1,6 @@
 # Klaviyo Extraction SDK
 
-This SDK is a wrapper around Klaviyo's API, that makes it easier to extract data via the API.
+This SDK is a wrapper around [Klaviyo's API](https://www.klaviyo.com/docs), that makes it easier to extract data.
 
 Currently, the SDK supports extracting Events, Profiles, and Metrics, but in the future will also support extracting more complex funnel metrics.
 
