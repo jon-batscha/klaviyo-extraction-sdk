@@ -47,5 +47,5 @@ A recommended workflow for scaling extracting profile IDs (step 1 above) to tens
 Python 3.8.3
 
 packages:
-- requests : https://requests.readthedocs.io/en/master/
+- [requests](https://requests.readthedocs.io/en/master/)
   - `pip install requests`
