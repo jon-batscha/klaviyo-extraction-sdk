@@ -5,9 +5,6 @@ class Extractor:
     def __init__(self, private_key):
 
         self.private_key = private_key
-        self.events_wait = False
-        self.members_wait = False
-        self.profile_wait = False
 
 
     def get_metric_events(self, metric_id, earliest_timestamp, last_timestamp):
@@ -26,52 +23,44 @@ class Extractor:
 
         while True:
 
-            if self.events_wait:
+            timeline_call = f'https://a.klaviyo.com/api/v1/metric/{metric_id}/timeline?api_key={self.private_key}&since={since}&sort=asc&count=100'
 
-                time.sleep(1)
+            response = requests.get(timeline_call)
+
+            if response.status_code == 404:
+
+                print('Error : 404 code')
+                return None
+
+            elif response.status_code == 429:
+
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
-                timeline_call = f'https://a.klaviyo.com/api/v1/metric/{metric_id}/timeline?api_key={self.private_key}&since={since}&sort=asc&count=100'
+                content = response.json()
 
-                response = requests.get(timeline_call)
+                for event in content['data']:
 
-                if response.status_code == 404:
-
-                    print('Error : 404 code')
-                    return None
-
-                elif response.status_code == 429:
-
-                    sleep = eval(response.json()['detail'].split()[-2])
-
-                    print(f'rate limit exceeded, # seconds to sleep: {sleep}')
-                    self.events_wait = True
-                    time.sleep(sleep)
-                    self.events_wait = False
-
-                else:
-
-                    content = response.json()
-
-                    for event in content['data']:
-
-                        if event['timestamp'] > last_timestamp:
-                            
-                            print(f'Done Retrieving Events for Thread : {len(events)}')
-                            return events
-
-                        else:
-
-                            events.append(event)
-
-                    since = content['next']
-
-                    if not since:
+                    if event['timestamp'] > last_timestamp:
+                        
                         print(f'Done Retrieving Events for Thread : {len(events)}')
                         return events
 
-                print(f'# Events Retrieved by Thread : {len(events)}')
+                    else:
+
+                        events.append(event)
+
+                since = content['next']
+
+                if not since:
+                    print(f'Done Retrieving Events for Thread : {len(events)}')
+                    return events
+
+            print(f'# Events Retrieved by Thread : {len(events)}')
 
     
     def get_metric_events_serial(self,metric_id,earliest_timestamp,latest_timestamp):
@@ -193,52 +182,43 @@ class Extractor:
 
         while True:
 
-            if self.members_wait:
+            if not marker:
 
-                time.sleep(1)
+                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}'
 
             else:
 
+                members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}&marker={marker}'
 
-                if not marker:
+            response = requests.get(members_call)
 
-                    members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}'
+            if response.status_code == 200:
 
-                else:
+                members_content = response.json()
 
-                    members_call = f'https://a.klaviyo.com/api/v2/group/{segment_id}/members/all?api_key={self.private_key}&marker={marker}'
+                ids.extend([record['id'] for record in members_content['records']])
 
-                response = requests.get(members_call)
+                if 'marker' in members_content:
 
-                if response.status_code == 200:
-
-                    members_content = response.json()
-
-                    ids.extend([record['id'] for record in members_content['records']])
-
-                    if 'marker' in members_content:
-
-                        marker = members_content['marker']
-
-                    else:
-
-                        break
-
-                elif response.status_code == 429:
-
-                    sleep = eval(response.json()['detail'].split()[-2])
-
-                    print(f'rate limit exceeded, # seconds to sleep: {sleep}')
-                    self.members_wait = True
-                    time.sleep(sleep)
-                    self.members_wait = False
+                    marker = members_content['marker']
 
                 else:
 
-                    print('ERROR 404')
-                    return None
+                    break
 
-                print('IDs SAVED:',len(ids))
+            elif response.status_code == 429:
+
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
+
+            else:
+
+                print('ERROR 404')
+                return None
+
+            print('IDs SAVED:',len(ids))
 
 
         print('IDs SAVED:',len(ids))
@@ -251,43 +231,34 @@ class Extractor:
 
         while True:
 
-            if self.profile_wait:
+            profile_call = f'https://a.klaviyo.com/api/v1/person/{profile_id}?api_key={self.private_key}'
 
-                time.sleep(1)
+            response = requests.get(profile_call)
+
+            if response.status_code == 429:
+
+                sleep = eval(response.json()['detail'].split()[-2])
+
+                print(f'rate limit exceeded, # seconds to sleep: {sleep}')
+                time.sleep(sleep)
 
             else:
 
+                if response.status_code == 200:
 
-                profile_call = f'https://a.klaviyo.com/api/v1/person/{profile_id}?api_key={self.private_key}'
-
-                response = requests.get(profile_call)
-
-                if response.status_code == 429:
-
-                    sleep = eval(response.json()['detail'].split()[-2])
-
-                    print(f'rate limit exceeded, # seconds to sleep: {sleep}')
-                    self.profile_wait=True
-                    time.sleep(sleep)
-                    self.profile_wait=False
+                    return response.json()
 
                 else:
 
-                    if response.status_code == 200:
+                    if response.status_code == 404:
 
-                        return response.json()
+                        print('ERROR: 404')
 
                     else:
 
-                        if response.status_code == 404:
+                        print(f'UNKNOWN RESPONSE: {response.status_code}')
 
-                            print('ERROR: 404')
-
-                        else:
-
-                            print(f'UNKNOWN RESPONSE: {response.status_code}')
-
-                        return None
+                    return None
                 
     def get_profiles_parallel(self, profile_ids):
         '''
@@ -363,3 +334,8 @@ class Extractor:
         pool.join()
 
         return {list_ids[i]: result[i] for i in range(len(list_ids))} 
+
+
+
+
+
