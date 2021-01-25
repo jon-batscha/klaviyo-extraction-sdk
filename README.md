@@ -41,6 +41,18 @@ A recommended workflow for scaling extracting profile IDs (step 1 above) to tens
 2. Create a segment of new profiles created over the past day
 3. every day, only extract profile IDs from that segment, and add them to the store of IDs
 
+## Extractable Data
+
+This SDK is a work in progress; it currently supports extracting the following data:
+
+- metrics
+- metric events
+- profile ids
+- profiles
+- lists
+- list memberships
+
+* NOTE: Please see the [extractor class](https://github.com/jon-batscha/klaviyo-extraction-sdk/blob/master/extractor.py) for details on use/implementation
 
 ## Dependencies
 
